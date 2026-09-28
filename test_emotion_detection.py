@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 
 import requests
 
-from emotion_detection import (
+from EmotionDetection.emotion_detection import (
     EMOTION_MODEL_ID,
     EMOTION_PREDICT_URL,
     REQUEST_TIMEOUT_SECONDS,
@@ -12,7 +12,7 @@ from emotion_detection import (
 
 
 class TestEmotionDetector(unittest.TestCase):
-    @patch("emotion_detection.requests.post")
+    @patch("EmotionDetection.emotion_detection.requests.post")
     def test_emotion_detector_returns_emotion_scores_and_dominant(self, mock_post):
         text_to_analyze = "I am very happy today"
         mock_response = Mock()
@@ -48,7 +48,7 @@ class TestEmotionDetector(unittest.TestCase):
         )
         mock_response.raise_for_status.assert_called_once_with()
 
-    @patch("emotion_detection.requests.post")
+    @patch("EmotionDetection.emotion_detection.requests.post")
     def test_emotion_detector_raises_for_http_error(self, mock_post):
         mock_response = Mock()
         mock_response.raise_for_status.side_effect = requests.HTTPError("HTTP error")

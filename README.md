@@ -13,43 +13,36 @@ uv run python
 ```
 
 ```python
->>> from emotion_detection import emotion_detector
+>>> from EmotionDetection import emotion_detector
 >>> emotion_detector("I love this new technology.")
-'{"emotionPredictions":[...]} '
+{'anger': 0.01, 'disgust': 0.00, 'fear': 0.01, 'joy': 0.97, 'sadness': 0.05, 'dominant_emotion': 'joy'}
 ```
 
-Note: the function returns a JSON string (not a Python dict).
+Note: the function returns a Python dictionary with five emotion scores and `dominant_emotion`.
 
 ### 2. Parse the returned JSON
 
-If you want to work with fields programmatically, parse the returned string:
+The returned dictionary is ready to use directly:
 
 ```python
-import json
-from emotion_detection import emotion_detector
+from EmotionDetection import emotion_detector
 
-raw = emotion_detector("I love this new technology.")
-payload = json.loads(raw)
+payload = emotion_detector("I love this new technology.")
 
-top_emotion_scores = payload["emotionPredictions"][0]["emotion"]
-print(top_emotion_scores)
+print(payload["joy"])
+print(payload["dominant_emotion"])
 ```
 
 Example output shape:
 
 ```json
 {
-  "emotionPredictions": [
-    {
-      "emotion": {
-        "anger": 0.01,
-        "disgust": 0.00,
-        "fear": 0.01,
-        "joy": 0.97,
-        "sadness": 0.05
-      }
-    }
-  ]
+  "anger": 0.01,
+  "disgust": 0.0,
+  "fear": 0.01,
+  "joy": 0.97,
+  "sadness": 0.05,
+  "dominant_emotion": "joy"
 }
 ```
 
@@ -59,7 +52,7 @@ The function calls `raise_for_status()`, so failed HTTP responses raise an excep
 
 ```python
 import requests
-from emotion_detection import emotion_detector
+from EmotionDetection import emotion_detector
 
 try:
     print(emotion_detector("This is a test."))
@@ -72,7 +65,7 @@ except requests.RequestException as err:
 ### 4. Try multiple inputs quickly
 
 ```python
-from emotion_detection import emotion_detector
+from EmotionDetection import emotion_detector
 
 samples = [
     "I am excited about this project!",
@@ -97,7 +90,10 @@ for text in samples:
 
 ## Project layout
 
-- emotion_detection.py: Emotion detection client function
+- EmotionDetection/: Package directory
+- EmotionDetection/emotion_detection.py: Emotion detection client function
+- EmotionDetection/__init__.py: Public package exports
+- emotion_detection.py: Backward-compatible import wrapper
 - test_emotion_detection.py: Unit tests for emotion detection
 - templates/: HTML templates
 - static/: Static frontend assets
@@ -116,7 +112,7 @@ for text in samples:
 
 3. Run lint checks:
 
-	 uv run pylint emotion_detection.py test_emotion_detection.py
+   uv run pylint EmotionDetection/emotion_detection.py test_emotion_detection.py
 
 ## Dependency management with uv
 
@@ -153,5 +149,5 @@ for text in samples:
 2. Run uv sync.
 3. Implement changes.
 4. Run uv run python -m unittest -v.
-5. Run uv run pylint emotion_detection.py test_emotion_detection.py.
+5. Run uv run pylint EmotionDetection/emotion_detection.py test_emotion_detection.py.
 6. Commit code and dependency metadata updates together.
