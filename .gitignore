@@ -127,3 +127,27 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# -------------------------------
+# Modern Python/Flask best practices
+# -------------------------------
+
+# Environment variable files (keep only templates in git)
+.env.*
+!.env.example
+!.env.sample
+
+# Flask local runtime files
+.flaskenv
+
+# Modern Python tooling caches
+.ruff_cache/
+.pytype/
+
+# IDE/editor settings (optional; comment out if shared settings are desired)
+.idea/
+.vscode/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
