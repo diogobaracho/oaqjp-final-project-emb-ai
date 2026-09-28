@@ -9,6 +9,8 @@ For this project, you'll use the Emotion Predict function of the Watson NLP Libr
 
 """
 
+import json
+
 import requests
 
 EMOTION_PREDICT_URL = (
@@ -19,8 +21,8 @@ EMOTION_MODEL_ID = "emotion_aggregated-workflow_lang_en_stock"
 REQUEST_TIMEOUT_SECONDS = 10
 
 
-def emotion_detector(text_to_analyze: str) -> str:
-    """Call Watson NLP EmotionPredict and return the response text payload."""
+def emotion_detector(text_to_analyze: str) -> dict[str, float | str]:
+    """Call Watson NLP EmotionPredict and return extracted emotion scores."""
     headers = {"grpc-metadata-mm-model-id": EMOTION_MODEL_ID}
     payload = {"raw_document": {"text": text_to_analyze}}
 
@@ -31,4 +33,30 @@ def emotion_detector(text_to_analyze: str) -> str:
         timeout=REQUEST_TIMEOUT_SECONDS,
     )
     response.raise_for_status()
-    return response.text
+
+    response_dict = json.loads(response.text)
+    emotions = response_dict["emotionPredictions"][0]["emotion"]
+
+    anger = emotions["anger"]
+    disgust = emotions["disgust"]
+    fear = emotions["fear"]
+    joy = emotions["joy"]
+    sadness = emotions["sadness"]
+
+    emotion_scores = {
+        "anger": anger,
+        "disgust": disgust,
+        "fear": fear,
+        "joy": joy,
+        "sadness": sadness,
+    }
+    dominant_emotion = max(emotion_scores, key=emotion_scores.get)
+
+    return {
+        "anger": anger,
+        "disgust": disgust,
+        "fear": fear,
+        "joy": joy,
+        "sadness": sadness,
+        "dominant_emotion": dominant_emotion,
+    }

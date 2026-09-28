@@ -13,15 +13,33 @@ from emotion_detection import (
 
 class TestEmotionDetector(unittest.TestCase):
     @patch("emotion_detection.requests.post")
-    def test_emotion_detector_returns_response_text(self, mock_post):
+    def test_emotion_detector_returns_emotion_scores_and_dominant(self, mock_post):
         text_to_analyze = "I am very happy today"
         mock_response = Mock()
-        mock_response.text = '{"emotionPredictions":[]}'
+        mock_response.text = (
+            '{"emotionPredictions":[{"emotion":{'
+            '"anger":0.1,'
+            '"disgust":0.05,'
+            '"fear":0.2,'
+            '"joy":0.6,'
+            '"sadness":0.05'
+            '}}]}'
+        )
         mock_post.return_value = mock_response
 
         result = emotion_detector(text_to_analyze)
 
-        self.assertEqual(result, mock_response.text)
+        self.assertEqual(
+            result,
+            {
+                "anger": 0.1,
+                "disgust": 0.05,
+                "fear": 0.2,
+                "joy": 0.6,
+                "sadness": 0.05,
+                "dominant_emotion": "joy",
+            },
+        )
         mock_post.assert_called_once_with(
             EMOTION_PREDICT_URL,
             headers={"grpc-metadata-mm-model-id": EMOTION_MODEL_ID},
