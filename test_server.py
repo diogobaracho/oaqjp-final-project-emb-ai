@@ -35,6 +35,31 @@ class TestServerEmotionDetectorRoute(unittest.TestCase):
             "The dominant emotion is <b>joy</b>.",
         )
 
+    @patch("server.emotion_detector")
+    def test_emotion_detector_route_formats_blank_input_response(self, mock_emotion_detector):
+        mock_emotion_detector.return_value = {
+            "anger": None,
+            "disgust": None,
+            "fear": None,
+            "joy": None,
+            "sadness": None,
+            "dominant_emotion": None,
+        }
+
+        response = self.client.get("/emotionDetector", query_string={"textToAnalyze": ""})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.get_data(as_text=True),
+            "For the given statement, the system response is "
+            "'anger': None, "
+            "'disgust': None, "
+            "'fear': None, "
+            "'joy': None and "
+            "'sadness': None. "
+            "The dominant emotion is <b>None</b>.",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

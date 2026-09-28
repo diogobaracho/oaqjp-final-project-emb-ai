@@ -20,7 +20,7 @@ uv run python
 
 Note: the function returns a Python dictionary with five emotion scores and `dominant_emotion`.
 
-### 2. Parse the returned JSON
+### 2. Use the returned dictionary
 
 The returned dictionary is ready to use directly:
 
@@ -46,7 +46,29 @@ Example output shape:
 }
 ```
 
-### 3. Handle network and HTTP errors
+### 3. Blank input behavior
+
+When the upstream service returns HTTP 400 (for example, when the input is blank),
+the function returns a dictionary with `None` for every field.
+
+```python
+from EmotionDetection import emotion_detector
+
+print(emotion_detector(""))
+```
+
+```python
+{
+    "anger": None,
+    "disgust": None,
+    "fear": None,
+    "joy": None,
+    "sadness": None,
+    "dominant_emotion": None,
+}
+```
+
+### 4. Handle network and HTTP errors
 
 The function calls `raise_for_status()`, so failed HTTP responses raise an exception.
 
@@ -62,7 +84,7 @@ except requests.RequestException as err:
     print(f"Network or request error: {err}")
 ```
 
-### 4. Try multiple inputs quickly
+### 5. Try multiple inputs quickly
 
 ```python
 from EmotionDetection import emotion_detector

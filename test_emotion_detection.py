@@ -57,6 +57,29 @@ class TestEmotionDetectorResponse(unittest.TestCase):
         with self.assertRaises(requests.HTTPError):
             emotion_detector("test")
 
+    @patch("EmotionDetection.emotion_detection.requests.post")
+    def test_emotion_detector_returns_none_values_for_blank_input_status_400(
+        self, mock_post
+    ):
+        mock_response = Mock()
+        mock_response.status_code = 400
+        mock_post.return_value = mock_response
+
+        result = emotion_detector("")
+
+        self.assertEqual(
+            result,
+            {
+                "anger": None,
+                "disgust": None,
+                "fear": None,
+                "joy": None,
+                "sadness": None,
+                "dominant_emotion": None,
+            },
+        )
+        mock_response.raise_for_status.assert_not_called()
+
 
 class TestEmotionDetectorStatements(unittest.TestCase):
     @patch("EmotionDetection.emotion_detection.requests.post")
