@@ -51,13 +51,7 @@ class TestServerEmotionDetectorRoute(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.get_data(as_text=True),
-            "For the given statement, the system response is "
-            "'anger': None, "
-            "'disgust': None, "
-            "'fear': None, "
-            "'joy': None and "
-            "'sadness': None. "
-            "The dominant emotion is <b>None</b>.",
+            "Invalid text! Please try again!",
         )
 
 
