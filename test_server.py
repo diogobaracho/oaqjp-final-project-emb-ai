@@ -1,3 +1,7 @@
+"""Unit tests for Flask server routes."""
+
+# pylint: disable=duplicate-code
+
 import unittest
 from unittest.mock import patch
 
@@ -5,11 +9,15 @@ from server import app
 
 
 class TestServerEmotionDetectorRoute(unittest.TestCase):
+    """Route-level tests for /emotionDetector endpoint."""
+
     def setUp(self):
+        """Create Flask test client."""
         self.client = app.test_client()
 
     @patch("server.emotion_detector")
     def test_emotion_detector_route_formats_required_response(self, mock_emotion_detector):
+        """Route should return the required formatted success message."""
         mock_emotion_detector.return_value = {
             "anger": 0.006274985,
             "disgust": 0.0025598293,
@@ -37,6 +45,7 @@ class TestServerEmotionDetectorRoute(unittest.TestCase):
 
     @patch("server.emotion_detector")
     def test_emotion_detector_route_formats_blank_input_response(self, mock_emotion_detector):
+        """Route should return invalid-text message when dominant emotion is None."""
         mock_emotion_detector.return_value = {
             "anger": None,
             "disgust": None,

@@ -1,3 +1,7 @@
+"""Unit tests for the EmotionDetection emotion detector."""
+
+# pylint: disable=duplicate-code
+
 import unittest
 from unittest.mock import Mock, patch
 
@@ -12,8 +16,11 @@ from EmotionDetection.emotion_detection import (
 
 
 class TestEmotionDetectorResponse(unittest.TestCase):
+    """Response-level tests for emotion_detector."""
+
     @patch("EmotionDetection.emotion_detection.requests.post")
     def test_emotion_detector_returns_emotion_scores_and_dominant(self, mock_post):
+        """It should parse API payload and compute dominant emotion."""
         text_to_analyze = "I am very happy today"
         mock_response = Mock()
         mock_response.text = (
@@ -50,6 +57,7 @@ class TestEmotionDetectorResponse(unittest.TestCase):
 
     @patch("EmotionDetection.emotion_detection.requests.post")
     def test_emotion_detector_raises_for_http_error(self, mock_post):
+        """It should propagate HTTP errors for non-400 failures."""
         mock_response = Mock()
         mock_response.raise_for_status.side_effect = requests.HTTPError("HTTP error")
         mock_post.return_value = mock_response
@@ -61,6 +69,7 @@ class TestEmotionDetectorResponse(unittest.TestCase):
     def test_emotion_detector_returns_none_values_for_blank_input_status_400(
         self, mock_post
     ):
+        """It should return None values when service responds with 400."""
         mock_response = Mock()
         mock_response.status_code = 400
         mock_post.return_value = mock_response
@@ -82,8 +91,11 @@ class TestEmotionDetectorResponse(unittest.TestCase):
 
 
 class TestEmotionDetectorStatements(unittest.TestCase):
+    """Statement-to-dominant-emotion mapping tests."""
+
     @patch("EmotionDetection.emotion_detection.requests.post")
     def test_required_statements_dominant_emotions(self, mock_post):
+        """Each required statement should map to expected dominant emotion."""
         cases = [
             ("am glad this happened", "joy"),
             ("I am really mad about this", "anger"),
